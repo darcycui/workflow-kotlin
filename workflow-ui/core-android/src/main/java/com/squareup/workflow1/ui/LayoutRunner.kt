@@ -21,7 +21,7 @@ typealias ViewBindingInflater<BindingT> = (LayoutInflater, ViewGroup?, Boolean) 
  * implement this interface at all. For details, see the three overloads of [LayoutRunner.bind].
  */
 @WorkflowUiExperimentalApi
-interface LayoutRunner<RenderingT : Any> {
+fun interface LayoutRunner<RenderingT : Any> {
   fun showRendering(
     rendering: RenderingT,
     viewEnvironment: ViewEnvironment
@@ -46,11 +46,8 @@ interface LayoutRunner<RenderingT : Any> {
       noinline bindingInflater: ViewBindingInflater<BindingT>,
       crossinline showRendering: BindingT.(RenderingT, ViewEnvironment) -> Unit
     ): ViewFactory<RenderingT> = bind(bindingInflater) { binding ->
-      object : LayoutRunner<RenderingT> {
-        override fun showRendering(
-          rendering: RenderingT,
-          viewEnvironment: ViewEnvironment
-        ) = binding.showRendering(rendering, viewEnvironment)
+      LayoutRunner { rendering, viewEnvironment ->
+        binding.showRendering(rendering, viewEnvironment)
       }
     }
 
